@@ -7,12 +7,19 @@ namespace ImageSharp.Tests
 {
     using System;
     using System.IO;
-    using System.Numerics;
+    using TestUtilities;
 
     using Xunit;
 
     public class GeneralFormatTests : FileTestBase
     {
+        private readonly CachedFileFixture testFiles;
+
+        public GeneralFormatTests()
+        {
+            this.testFiles = new CachedFileFixture(); ;
+        }
+
         [Fact]
         public void ResolutionShouldChange()
         {
@@ -22,12 +29,11 @@ namespace ImageSharp.Tests
             {
                 Image image = file.CreateImage();
 
-                using (FileStream output = File.OpenWrite($"{path}/{file.FileName}"))
-                {
-                    image.VerticalResolution = 150;
-                    image.HorizontalResolution = 150;
-                    image.Save(output);
-                }
+                FileStream output = this.testFiles.GetFileStream($"{path}/{file.FileName}");
+
+                image.VerticalResolution = 150;
+                image.HorizontalResolution = 150;
+                image.Save(output);
             }
         }
 
@@ -87,10 +93,9 @@ namespace ImageSharp.Tests
                 // Image<NormalizedShort4, ulong> image = file.CreateImage().To<NormalizedShort4, ulong>();
                 // Image<Short2, uint> image = file.CreateImage().To<Short2, uint>();
                 // Image<Short4, ulong> image = file.CreateImage().To<Short4, ulong>();
-                using (FileStream output = File.OpenWrite($"{path}/{file.FileName}"))
-                {
-                    image.Save(output);
-                }
+                FileStream output = this.testFiles.GetFileStream($"{path}/{file.FileName}");
+               
+                image.Save(output);
             }
         }
 
@@ -107,7 +112,7 @@ namespace ImageSharp.Tests
                 Color[] pixels = new Color[image.Width * image.Height];
                 Array.Copy(image.Pixels, pixels, image.Pixels.Length);
 
-                using (FileStream output = File.OpenWrite($"{path}/Octree-{file.FileName}"))
+                using (FileStream output = this.testFiles.GetFileStream($"{path}/Octree-{file.FileName}"))
                 {
                     image.Quantize(Quantization.Octree)
                           .Save(output, image.CurrentImageFormat);
@@ -115,14 +120,14 @@ namespace ImageSharp.Tests
                 }
 
                 image.SetPixels(image.Width, image.Height, pixels);
-                using (FileStream output = File.OpenWrite($"{path}/Wu-{file.FileName}"))
+                using (FileStream output = this.testFiles.GetFileStream($"{path}/Wu-{file.FileName}"))
                 {
                     image.Quantize(Quantization.Wu)
                           .Save(output, image.CurrentImageFormat);
                 }
 
                 image.SetPixels(image.Width, image.Height, pixels);
-                using (FileStream output = File.OpenWrite($"{path}/Palette-{file.FileName}"))
+                using (FileStream output = this.testFiles.GetFileStream($"{path}/Palette-{file.FileName}"))
                 {
                     image.Quantize(Quantization.Palette)
                           .Save(output, image.CurrentImageFormat);
@@ -139,23 +144,23 @@ namespace ImageSharp.Tests
             {
                 Image image = file.CreateImage();
 
-                using (FileStream output = File.OpenWrite($"{path}/{file.FileNameWithoutExtension}.gif"))
                 {
+                    FileStream output = this.testFiles.GetFileStream($"{path}/{file.FileNameWithoutExtension}.gif");
                     image.SaveAsGif(output);
                 }
 
-                using (FileStream output = File.OpenWrite($"{path}/{file.FileNameWithoutExtension}.bmp"))
                 {
+                    FileStream output = this.testFiles.GetFileStream($"{path}/{file.FileNameWithoutExtension}.bmp");
                     image.SaveAsBmp(output);
                 }
 
-                using (FileStream output = File.OpenWrite($"{path}/{file.FileNameWithoutExtension}.jpg"))
                 {
+                    FileStream output = this.testFiles.GetFileStream($"{path}/{file.FileNameWithoutExtension}.jpg");
                     image.SaveAsJpeg(output);
                 }
 
-                using (FileStream output = File.OpenWrite($"{path}/{file.FileNameWithoutExtension}.png"))
                 {
+                    FileStream output = this.testFiles.GetFileStream($"{path}/{file.FileNameWithoutExtension}.png");
                     image.SaveAsPng(output);
                 }
             }
@@ -181,10 +186,10 @@ namespace ImageSharp.Tests
                 using (MemoryStream memoryStream = new MemoryStream(serialized))
                 {
                     Image image2 = new Image(memoryStream);
-                    using (FileStream output = File.OpenWrite($"{path}/{file.FileName}"))
-                    {
-                        image2.Save(output);
-                    }
+
+                    FileStream output = this.testFiles.GetFileStream($"{path}/{file.FileName}");
+
+                    image2.Save(output);
                 }
             }
         }
