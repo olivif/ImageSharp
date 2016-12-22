@@ -28,6 +28,20 @@ namespace ImageSharp.Formats
         /// </summary>
         private bool subsampleSet;
 
+        /// <inheritdoc/>
+        public IEncoderOptions EncoderOptions
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         /// <summary>
         /// Gets or sets the quality, that will be used to encode the image. Quality
         /// index must be between 0 and 100 (compression from max to min).

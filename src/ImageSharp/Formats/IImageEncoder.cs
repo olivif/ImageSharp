@@ -14,6 +14,11 @@ namespace ImageSharp.Formats
     public interface IImageEncoder
     {
         /// <summary>
+        /// Gets or sets the encoder options.
+        /// </summary>
+        IEncoderOptions EncoderOptions { get; set; }
+
+        /// <summary>
         /// Encodes the image to the specified stream from the <see cref="Image{TColor, TPacked}"/>.
         /// </summary>
         /// <typeparam name="TColor">The pixel format.</typeparam>

@@ -32,6 +32,20 @@ namespace ImageSharp.Formats
         public IQuantizer Quantizer { get; set; }
 
         /// <inheritdoc/>
+        public IEncoderOptions EncoderOptions
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <inheritdoc/>
         public void Encode<TColor, TPacked>(Image<TColor, TPacked> image, Stream stream)
         where TColor : struct, IPackedPixel<TPacked>
         where TPacked : struct, IEquatable<TPacked>
