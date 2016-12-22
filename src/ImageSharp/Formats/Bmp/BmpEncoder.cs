@@ -15,6 +15,14 @@ namespace ImageSharp.Formats
     /// <remarks>The encoder can currently only write 24-bit rgb images to streams.</remarks>
     public class BmpEncoder : IImageEncoder
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BmpEncoder"/> class.
+        /// </summary>
+        public BmpEncoder()
+        {
+            this.EncoderOptions = new BmpEncoderOptions();
+        }
+
         /// <inheritdoc/>
         public IEncoderOptions EncoderOptions { get; set; }
 
