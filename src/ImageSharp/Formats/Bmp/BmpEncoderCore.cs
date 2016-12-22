@@ -7,7 +7,7 @@ namespace ImageSharp.Formats
 {
     using System;
     using System.IO;
-
+    using Bmp;
     using IO;
 
     /// <summary>
@@ -32,14 +32,15 @@ namespace ImageSharp.Formats
         /// <typeparam name="TPacked">The packed format. <example>long, float.</example></typeparam>
         /// <param name="image">The <see cref="ImageBase{TColor, TPacked}"/> to encode from.</param>
         /// <param name="stream">The <see cref="Stream"/> to encode the image data to.</param>
-        /// <param name="bitsPerPixel">The <see cref="BmpBitsPerPixel"/></param>
-        public void Encode<TColor, TPacked>(ImageBase<TColor, TPacked> image, Stream stream, BmpBitsPerPixel bitsPerPixel)
+        /// <param name="options">The <see cref="IEncoderOptions"/></param>
+        public void Encode<TColor, TPacked>(ImageBase<TColor, TPacked> image, Stream stream, BmpEncoderOptions options)
             where TColor : struct, IPackedPixel<TPacked>
             where TPacked : struct, IEquatable<TPacked>
         {
             Guard.NotNull(image, nameof(image));
             Guard.NotNull(stream, nameof(stream));
 
+            var bitsPerPixel = options.BitsPerPixel;
             this.bmpBitsPerPixel = bitsPerPixel;
 
             // Cast to int will get the bytes per pixel

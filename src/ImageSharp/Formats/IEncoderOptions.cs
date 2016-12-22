@@ -12,14 +12,5 @@ namespace ImageSharp.Formats
     /// </summary>
     public interface IEncoderOptions
     {
-        /// <summary>
-        /// Gets or sets the quality of output for images.
-        /// </summary>
-        int Quality { get; set; }
-
-        /// <summary>
-        /// Gets or sets the quantizer for reducing the color count.
-        /// </summary>
-        IQuantizer Quantizer { get; set; }
     }
 }

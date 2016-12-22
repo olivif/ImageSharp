@@ -10,7 +10,7 @@ namespace ImageSharp.Tests
     using System.IO;
 
     using Formats;
-
+    using ImageSharp.Formats.Bmp;
     using Xunit;
 
     public class BitmapTests : FileTestBase
@@ -35,7 +35,15 @@ namespace ImageSharp.Tests
 
                 using (FileStream output = File.OpenWrite($"{path}/{filename}.bmp"))
                 {
-                    image.Save(output, new BmpEncoder { BitsPerPixel = bitsPerPixel });
+                    var options = new BmpEncoderOptions
+                    {
+                        BitsPerPixel = bitsPerPixel
+                    };
+                    var encoder = new BmpEncoder
+                    {
+                        EncoderOptions = options
+                    };
+                    image.Save(output, encoder);
                 }
             }
         }
