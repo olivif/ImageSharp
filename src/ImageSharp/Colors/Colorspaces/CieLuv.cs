@@ -14,39 +14,9 @@ namespace ImageSharp.Colors.Colorspaces
     public struct CieLuv : IEquatable<CieLuv>, IAlmostEquatable<CieLuv, float>
     {
         /// <summary>
-        /// The backing vector for SIMD support.
-        /// </summary>
-        private Vector3 backingVector;
-
-        /// <summary>
-        /// Lightness X
-        /// </summary>
-        public float Lx => this.backingVector.X;
-
-        /// <summary>
-        /// Lightness Y
-        /// </summary>
-        public float Ly => this.backingVector.Y;
-
-        /// <summary>
-        /// Lightness Z
-        /// </summary>
-        public float Lz => this.backingVector.Z;
-
-        /// <summary>
-        /// Illuminant value
-        /// </summary>
-        public string Illuminant;
-
-        /// <summary>
         /// Default illuminant value
         /// </summary>
         private const string DefaultIlluminant = "D65";
-
-        /// <summary>
-        /// Observer value
-        /// </summary>
-        public int Observer;
 
         /// <summary>
         /// Default observer value
@@ -54,7 +24,12 @@ namespace ImageSharp.Colors.Colorspaces
         private const int DefaultObserver = 2;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CieLuv"/> class.
+        /// The backing vector for SIMD support.
+        /// </summary>
+        private Vector3 backingVector;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CieLuv"/> struct.
         /// </summary>
         /// <param name="lx">Lightness x</param>
         /// <param name="ly">Lightness y</param>
@@ -65,7 +40,7 @@ namespace ImageSharp.Colors.Colorspaces
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CieLuv"/> class.
+        /// Initializes a new instance of the <see cref="CieLuv"/> struct.
         /// </summary>
         /// <param name="lx">Lightness x</param>
         /// <param name="ly">Lightness y</param>
@@ -79,6 +54,31 @@ namespace ImageSharp.Colors.Colorspaces
             this.Illuminant = illuminant;
             this.Observer = observer;
         }
+
+        /// <summary>
+        /// Gets the lightness X
+        /// </summary>
+        public float Lx => this.backingVector.X;
+
+        /// <summary>
+        /// Gets the lightness Y
+        /// </summary>
+        public float Ly => this.backingVector.Y;
+
+        /// <summary>
+        /// Gets the lightness Z
+        /// </summary>
+        public float Lz => this.backingVector.Z;
+
+        /// <summary>
+        /// Gets the illuminant value
+        /// </summary>
+        public string Illuminant { get; }
+
+        /// <summary>
+        /// Gets the observer value
+        /// </summary>
+        public int Observer { get; }
 
         /// <inheritdoc/>
         public bool AlmostEquals(CieLuv other, float precision)
