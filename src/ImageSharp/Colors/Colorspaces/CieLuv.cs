@@ -19,31 +19,66 @@ namespace ImageSharp.Colors.Colorspaces
         private Vector3 backingVector;
 
         /// <summary>
-        /// Lightness component
-        /// <remarks>
-        /// A value ranging between 0 and 100.
-        /// http://cs.haifa.ac.il/hagit/courses/ist/Lectures/Demos/ColorApplet/me/infoluv.html
-        /// </remarks>
+        /// Lightness X
         /// </summary>
-        public float L => this.backingVector.X;
+        public float Lx => this.backingVector.X;
 
         /// <summary>
-        /// U component
-        /// <remarks>
-        /// A value ranging between -134 and 220.
-        /// http://cs.haifa.ac.il/hagit/courses/ist/Lectures/Demos/ColorApplet/me/infoluv.html
-        /// </remarks>
+        /// Lightness Y
         /// </summary>
-        public float U => this.backingVector.Y;
+        public float Ly => this.backingVector.Y;
 
         /// <summary>
-        /// V component
-        /// <remarks>
-        /// A value ranging between -140 and 122.
-        /// http://cs.haifa.ac.il/hagit/courses/ist/Lectures/Demos/ColorApplet/me/infoluv.html
-        /// </remarks>
+        /// Lightness Z
         /// </summary>
-        public float V => this.backingVector.Z;
+        public float Lz => this.backingVector.Z;
+
+        /// <summary>
+        /// Illuminant value
+        /// </summary>
+        public string Illuminant;
+
+        /// <summary>
+        /// Default illuminant value
+        /// </summary>
+        private const string DefaultIlluminant = "D65";
+
+        /// <summary>
+        /// Observer value
+        /// </summary>
+        public int Observer;
+
+        /// <summary>
+        /// Default observer value
+        /// </summary>
+        private const int DefaultObserver = 2;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CieLuv"/> class.
+        /// </summary>
+        /// <param name="lx">Lightness x</param>
+        /// <param name="ly">Lightness y</param>
+        /// <param name="lz">Lightness z</param>
+        public CieLuv(float lx, float ly, float lz)
+            : this(lx, ly, lz, DefaultIlluminant, DefaultObserver)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CieLuv"/> class.
+        /// </summary>
+        /// <param name="lx">Lightness x</param>
+        /// <param name="ly">Lightness y</param>
+        /// <param name="lz">Lightness z</param>
+        /// <param name="illuminant">Illuminant</param>
+        /// <param name="observer">Observer</param>
+        public CieLuv(float lx, float ly, float lz, string illuminant, int observer)
+        {
+            this.backingVector = new Vector3(lx, ly, lz);
+
+            this.Illuminant = illuminant;
+            this.Observer = observer;
+        }
 
         /// <inheritdoc/>
         public bool AlmostEquals(CieLuv other, float precision)
