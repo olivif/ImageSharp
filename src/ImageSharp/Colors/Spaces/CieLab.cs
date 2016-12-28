@@ -13,7 +13,7 @@ namespace ImageSharp.Colors.Spaces
     /// Represents an CIE LAB 1976 color.
     /// <see href="https://en.wikipedia.org/wiki/Lab_color_space"/>
     /// </summary>
-    public struct CieLab : IEquatable<CieLab>, IAlmostEquatable<CieLab, float>
+    public class CieLab : ColorSpaceBase<CieLab>
     {
         /// <summary>
         /// Represents a <see cref="CieLab"/> that has L, A, B values set to zero.
@@ -21,44 +21,36 @@ namespace ImageSharp.Colors.Spaces
         public static readonly CieLab Empty = default(CieLab);
 
         /// <summary>
-        /// The epsilon for comparing floating point numbers.
-        /// </summary>
-        private const float Epsilon = 0.001f;
-
-        /// <summary>
-        /// The backing vector for SIMD support.
-        /// </summary>
-        private Vector3 backingVector;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CieLab"/> struct.
+        /// Initializes a new instance of the <see cref="CieLab"/> class.
         /// </summary>
         /// <param name="l">The lightness dimension.</param>
         /// <param name="a">The a (green - magenta) component.</param>
         /// <param name="b">The b (blue - yellow) component.</param>
         public CieLab(float l, float a, float b)
-            : this()
         {
-            this.backingVector = Vector3.Clamp(new Vector3(l, a, b), new Vector3(0, -100, -100), new Vector3(100));
+            this.BackingVector = Vector4.Clamp(
+                new Vector4(l, a, b, 0),
+                new Vector4(0, -100, -100, 0),
+                new Vector4(100));
         }
 
         /// <summary>
         /// Gets the lightness dimension.
         /// <remarks>A value ranging between 0 (black), 100 (diffuse white) or higher (specular white).</remarks>
         /// </summary>
-        public float L => this.backingVector.X;
+        public float L => this.BackingVector.X;
 
         /// <summary>
         /// Gets the a color component.
         /// <remarks>Negative is green, positive magenta.</remarks>
         /// </summary>
-        public float A => this.backingVector.Y;
+        public float A => this.BackingVector.Y;
 
         /// <summary>
         /// Gets the b color component.
         /// <remarks>Negative is blue, positive is yellow</remarks>
         /// </summary>
-        public float B => this.backingVector.Z;
+        public float B => this.BackingVector.Z;
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="CieLab"/> is empty.
@@ -70,12 +62,8 @@ namespace ImageSharp.Colors.Spaces
         /// Allows the implicit conversion of an instance of <see cref="Color"/> to a
         /// <see cref="CieLab"/>.
         /// </summary>
-        /// <param name="color">
-        /// The instance of <see cref="Color"/> to convert.
-        /// </param>
-        /// <returns>
-        /// An instance of <see cref="CieLab"/>.
-        /// </returns>
+        /// <param name="color">The instance of <see cref="Color"/> to convert. </param>
+        /// <returns>An instance of <see cref="CieLab"/>. </returns>
         public static implicit operator CieLab(Color color)
         {
             // First convert to CIE XYZ
@@ -101,46 +89,6 @@ namespace ImageSharp.Colors.Spaces
             return new CieLab(l, a, b);
         }
 
-        /// <summary>
-        /// Compares two <see cref="CieLab"/> objects for equality.
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="CieLab"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="CieLab"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is equal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator ==(CieLab left, CieLab right)
-        {
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// Compares two <see cref="CieLab"/> objects for inequality
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="CieLab"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="CieLab"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is unequal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator !=(CieLab left, CieLab right)
-        {
-            return !left.Equals(right);
-        }
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return GetHashCode(this);
-        }
-
         /// <inheritdoc/>
         public override string ToString()
         {
@@ -151,43 +99,5 @@ namespace ImageSharp.Colors.Spaces
 
             return $"CieLab [ L={this.L:#0.##}, A={this.A:#0.##}, B={this.B:#0.##}]";
         }
-
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            if (obj is CieLab)
-            {
-                return this.Equals((CieLab)obj);
-            }
-
-            return false;
-        }
-
-        /// <inheritdoc/>
-        public bool Equals(CieLab other)
-        {
-            return this.AlmostEquals(other, Epsilon);
-        }
-
-        /// <inheritdoc/>
-        public bool AlmostEquals(CieLab other, float precision)
-        {
-            Vector3 result = Vector3.Abs(this.backingVector - other.backingVector);
-
-            return result.X < precision
-                && result.Y < precision
-                && result.Z < precision;
-        }
-
-        /// <summary>
-        /// Returns the hash code for this instance.
-        /// </summary>
-        /// <param name="color">
-        /// The instance of <see cref="CieLab"/> to return the hash code for.
-        /// </param>
-        /// <returns>
-        /// A 32-bit signed integer that is the hash code for this instance.
-        /// </returns>
-        private static int GetHashCode(CieLab color) => color.backingVector.GetHashCode();
     }
 }
