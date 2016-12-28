@@ -163,7 +163,7 @@ namespace ImageSharp
         /// <inheritdoc/>
         public bool Equals(Cmyk other)
         {
-            return this.AlmostEquals(other, Constants.Epsilon);
+            return this.backingVector.Equals(other.backingVector);
         }
 
         /// <inheritdoc/>

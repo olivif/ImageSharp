@@ -153,7 +153,7 @@ namespace ImageSharp
         /// <inheritdoc/>
         public bool Equals(CieXyz other)
         {
-            return this.AlmostEquals(other, Constants.Epsilon);
+            return this.backingVector.Equals(other.backingVector);
         }
 
         /// <inheritdoc/>
