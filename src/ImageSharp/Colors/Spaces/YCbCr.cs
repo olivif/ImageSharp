@@ -12,7 +12,7 @@ namespace ImageSharp.Colors.Spaces
     /// Represents an YCbCr (luminance, blue chroma, red chroma) color conforming to the full range standard used in digital imaging systems.
     /// <see href="http://en.wikipedia.org/wiki/YCbCr"/>
     /// </summary>
-    public struct YCbCr : IEquatable<YCbCr>
+    public class YCbCr : ColorSpaceBase<YCbCr>
     {
         /// <summary>
         /// Represents a <see cref="YCbCr"/> that has Y, Cb, and Cr values set to zero.
@@ -20,13 +20,12 @@ namespace ImageSharp.Colors.Spaces
         public static readonly YCbCr Empty = default(YCbCr);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="YCbCr"/> struct.
+        /// Initializes a new instance of the <see cref="YCbCr"/> class.
         /// </summary>
         /// <param name="y">The y luminance component.</param>
         /// <param name="cb">The cb chroma component.</param>
         /// <param name="cr">The cr chroma component.</param>
         public YCbCr(byte y, byte cb, byte cr)
-            : this()
         {
             this.Y = y;
             this.Cb = cb;
@@ -80,52 +79,6 @@ namespace ImageSharp.Colors.Spaces
             return new YCbCr(y, cb, cr);
         }
 
-        /// <summary>
-        /// Compares two <see cref="YCbCr"/> objects for equality.
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="YCbCr"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="YCbCr"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is equal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator ==(YCbCr left, YCbCr right)
-        {
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// Compares two <see cref="YCbCr"/> objects for inequality.
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="YCbCr"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="YCbCr"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is unequal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator !=(YCbCr left, YCbCr right)
-        {
-            return !left.Equals(right);
-        }
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hashCode = this.Y.GetHashCode();
-                hashCode = (hashCode * 397) ^ this.Cb.GetHashCode();
-                hashCode = (hashCode * 397) ^ this.Cr.GetHashCode();
-                return hashCode;
-            }
-        }
-
         /// <inheritdoc/>
         public override string ToString()
         {
@@ -135,23 +88,6 @@ namespace ImageSharp.Colors.Spaces
             }
 
             return $"YCbCr [ Y={this.Y}, Cb={this.Cb}, Cr={this.Cr} ]";
-        }
-
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            if (obj is YCbCr)
-            {
-                return this.Equals((YCbCr)obj);
-            }
-
-            return false;
-        }
-
-        /// <inheritdoc/>
-        public bool Equals(YCbCr other)
-        {
-            return this.Y == other.Y && this.Cb == other.Cb && this.Cr == other.Cr;
         }
     }
 }

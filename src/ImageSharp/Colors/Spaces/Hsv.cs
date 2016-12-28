@@ -12,7 +12,7 @@ namespace ImageSharp.Colors.Spaces
     /// <summary>
     /// Represents a HSV (hue, saturation, value) color. Also known as HSB (hue, saturation, brightness).
     /// </summary>
-    public struct Hsv : IEquatable<Hsv>, IAlmostEquatable<Hsv, float>
+    public class Hsv : ColorSpaceBase<Hsv>
     {
         /// <summary>
         /// Represents a <see cref="Hsv"/> that has H, S, and V values set to zero.
@@ -20,43 +20,36 @@ namespace ImageSharp.Colors.Spaces
         public static readonly Hsv Empty = default(Hsv);
 
         /// <summary>
-        /// The epsilon for comparing floating point numbers.
-        /// </summary>
-        private const float Epsilon = 0.001F;
-
-        /// <summary>
-        /// The backing vector for SIMD support.
-        /// </summary>
-        private Vector3 backingVector;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Hsv"/> struct.
+        /// Initializes a new instance of the <see cref="Hsv"/> class.
         /// </summary>
         /// <param name="h">The h hue component.</param>
         /// <param name="s">The s saturation component.</param>
         /// <param name="v">The v value (brightness) component.</param>
         public Hsv(float h, float s, float v)
         {
-            this.backingVector = Vector3.Clamp(new Vector3(h, s, v), Vector3.Zero, new Vector3(360, 1, 1));
+            this.BackingVector = Vector4.Clamp(
+                new Vector4(h, s, v, 0),
+                Vector4.Zero,
+                new Vector4(360, 1, 1, 0));
         }
 
         /// <summary>
         /// Gets the hue component.
         /// <remarks>A value ranging between 0 and 360.</remarks>
         /// </summary>
-        public float H => this.backingVector.X;
+        public float H => this.BackingVector.X;
 
         /// <summary>
         /// Gets the saturation component.
         /// <remarks>A value ranging between 0 and 1.</remarks>
         /// </summary>
-        public float S => this.backingVector.Y;
+        public float S => this.BackingVector.Y;
 
         /// <summary>
         /// Gets the value (brightness) component.
         /// <remarks>A value ranging between 0 and 1.</remarks>
         /// </summary>
-        public float V => this.backingVector.Z;
+        public float V => this.BackingVector.Z;
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="Hsv"/> is empty.
@@ -85,20 +78,20 @@ namespace ImageSharp.Colors.Spaces
             float s = 0;
             float v = max;
 
-            if (Math.Abs(chroma) < Epsilon)
+            if (Math.Abs(chroma) < ColorSpacesConstants.Epsilon)
             {
                 return new Hsv(0, s, v);
             }
 
-            if (Math.Abs(r - max) < Epsilon)
+            if (Math.Abs(r - max) < ColorSpacesConstants.Epsilon)
             {
                 h = (g - b) / chroma;
             }
-            else if (Math.Abs(g - max) < Epsilon)
+            else if (Math.Abs(g - max) < ColorSpacesConstants.Epsilon)
             {
                 h = 2 + ((b - r) / chroma);
             }
-            else if (Math.Abs(b - max) < Epsilon)
+            else if (Math.Abs(b - max) < ColorSpacesConstants.Epsilon)
             {
                 h = 4 + ((r - g) / chroma);
             }
@@ -114,46 +107,6 @@ namespace ImageSharp.Colors.Spaces
             return new Hsv(h, s, v);
         }
 
-        /// <summary>
-        /// Compares two <see cref="Hsv"/> objects for equality.
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="Hsv"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="Hsv"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is equal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator ==(Hsv left, Hsv right)
-        {
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// Compares two <see cref="Hsv"/> objects for inequality.
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="Hsv"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="Hsv"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is unequal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator !=(Hsv left, Hsv right)
-        {
-            return !left.Equals(right);
-        }
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return GetHashCode(this);
-        }
-
         /// <inheritdoc/>
         public override string ToString()
         {
@@ -164,43 +117,5 @@ namespace ImageSharp.Colors.Spaces
 
             return $"Hsv [ H={this.H:#0.##}, S={this.S:#0.##}, V={this.V:#0.##} ]";
         }
-
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            if (obj is Hsv)
-            {
-                return this.Equals((Hsv)obj);
-            }
-
-            return false;
-        }
-
-        /// <inheritdoc/>
-        public bool Equals(Hsv other)
-        {
-            return this.AlmostEquals(other, Epsilon);
-        }
-
-        /// <inheritdoc/>
-        public bool AlmostEquals(Hsv other, float precision)
-        {
-            Vector3 result = Vector3.Abs(this.backingVector - other.backingVector);
-
-            return result.X < precision
-                && result.Y < precision
-                && result.Z < precision;
-        }
-
-        /// <summary>
-        /// Returns the hash code for this instance.
-        /// </summary>
-        /// <param name="color">
-        /// The instance of <see cref="Hsv"/> to return the hash code for.
-        /// </param>
-        /// <returns>
-        /// A 32-bit signed integer that is the hash code for this instance.
-        /// </returns>
-        private static int GetHashCode(Hsv color) => color.backingVector.GetHashCode();
     }
 }

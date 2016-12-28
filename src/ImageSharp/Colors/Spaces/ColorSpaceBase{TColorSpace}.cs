@@ -17,11 +17,6 @@ namespace ImageSharp.Colors.Spaces
         where TColorSpace : ColorSpaceBase<TColorSpace>
     {
         /// <summary>
-        /// The epsilon for comparing floating point numbers.
-        /// </summary>
-        private const float Epsilon = 0.001f;
-
-        /// <summary>
         /// Gets or sets the backing vector for SIMD support.
         /// </summary>
         protected Vector4 BackingVector { get; set; }
@@ -50,7 +45,7 @@ namespace ImageSharp.Colors.Spaces
         /// <inheritdoc />
         public bool Equals(TColorSpace other)
         {
-            return this.AlmostEquals(other, Epsilon);
+            return this.AlmostEquals(other, ColorSpacesConstants.Epsilon);
         }
 
         /// <inheritdoc/>

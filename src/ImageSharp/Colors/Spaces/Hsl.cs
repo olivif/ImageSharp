@@ -12,7 +12,7 @@ namespace ImageSharp.Colors.Spaces
     /// <summary>
     /// Represents a Hsl (hue, saturation, lightness) color.
     /// </summary>
-    public struct Hsl : IEquatable<Hsl>, IAlmostEquatable<Hsl, float>
+    public class Hsl : ColorSpaceBase<Hsl>
     {
         /// <summary>
         /// Represents a <see cref="Hsl"/> that has H, S, and L values set to zero.
@@ -20,43 +20,36 @@ namespace ImageSharp.Colors.Spaces
         public static readonly Hsl Empty = default(Hsl);
 
         /// <summary>
-        /// The epsilon for comparing floating point numbers.
-        /// </summary>
-        private const float Epsilon = 0.001F;
-
-        /// <summary>
-        /// The backing vector for SIMD support.
-        /// </summary>
-        private Vector3 backingVector;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Hsl"/> struct.
+        /// Initializes a new instance of the <see cref="Hsl"/> class.
         /// </summary>
         /// <param name="h">The h hue component.</param>
         /// <param name="s">The s saturation component.</param>
         /// <param name="l">The l value (lightness) component.</param>
         public Hsl(float h, float s, float l)
         {
-            this.backingVector = Vector3.Clamp(new Vector3(h, s, l), Vector3.Zero, new Vector3(360, 1, 1));
+            this.BackingVector = Vector4.Clamp(
+                new Vector4(h, s, l, 0),
+                Vector4.Zero,
+                new Vector4(360, 1, 1, 0));
         }
 
         /// <summary>
         /// Gets the hue component.
         /// <remarks>A value ranging between 0 and 360.</remarks>
         /// </summary>
-        public float H => this.backingVector.X;
+        public float H => this.BackingVector.X;
 
         /// <summary>
         /// Gets the saturation component.
         /// <remarks>A value ranging between 0 and 1.</remarks>
         /// </summary>
-        public float S => this.backingVector.Y;
+        public float S => this.BackingVector.Y;
 
         /// <summary>
         /// Gets the lightness component.
         /// <remarks>A value ranging between 0 and 1.</remarks>
         /// </summary>
-        public float L => this.backingVector.Z;
+        public float L => this.BackingVector.Z;
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="Hsl"/> is empty.
@@ -85,20 +78,20 @@ namespace ImageSharp.Colors.Spaces
             float s = 0;
             float l = (max + min) / 2;
 
-            if (Math.Abs(chroma) < Epsilon)
+            if (Math.Abs(chroma) < ColorSpacesConstants.Epsilon)
             {
                 return new Hsl(0, s, l);
             }
 
-            if (Math.Abs(r - max) < Epsilon)
+            if (Math.Abs(r - max) < ColorSpacesConstants.Epsilon)
             {
                 h = (g - b) / chroma;
             }
-            else if (Math.Abs(g - max) < Epsilon)
+            else if (Math.Abs(g - max) < ColorSpacesConstants.Epsilon)
             {
                 h = 2 + ((b - r) / chroma);
             }
-            else if (Math.Abs(b - max) < Epsilon)
+            else if (Math.Abs(b - max) < ColorSpacesConstants.Epsilon)
             {
                 h = 4 + ((r - g) / chroma);
             }
@@ -121,46 +114,6 @@ namespace ImageSharp.Colors.Spaces
             return new Hsl(h, s, l);
         }
 
-        /// <summary>
-        /// Compares two <see cref="Hsl"/> objects for equality.
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="Hsl"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="Hsl"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is equal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator ==(Hsl left, Hsl right)
-        {
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// Compares two <see cref="Hsl"/> objects for inequality.
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="Hsl"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="Hsl"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is unequal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator !=(Hsl left, Hsl right)
-        {
-            return !left.Equals(right);
-        }
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return GetHashCode(this);
-        }
-
         /// <inheritdoc/>
         public override string ToString()
         {
@@ -171,43 +124,5 @@ namespace ImageSharp.Colors.Spaces
 
             return $"Hsl [ H={this.H:#0.##}, S={this.S:#0.##}, L={this.L:#0.##} ]";
         }
-
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            if (obj is Hsl)
-            {
-                return this.Equals((Hsl)obj);
-            }
-
-            return false;
-        }
-
-        /// <inheritdoc/>
-        public bool Equals(Hsl other)
-        {
-            return this.AlmostEquals(other, Epsilon);
-        }
-
-        /// <inheritdoc/>
-        public bool AlmostEquals(Hsl other, float precision)
-        {
-            Vector3 result = Vector3.Abs(this.backingVector - other.backingVector);
-
-            return result.X < precision
-                && result.Y < precision
-                && result.Z < precision;
-        }
-
-        /// <summary>
-        /// Returns the hash code for this instance.
-        /// </summary>
-        /// <param name="color">
-        /// The instance of <see cref="Hsl"/> to return the hash code for.
-        /// </param>
-        /// <returns>
-        /// A 32-bit signed integer that is the hash code for this instance.
-        /// </returns>
-        private static int GetHashCode(Hsl color) => color.backingVector.GetHashCode();
     }
 }
