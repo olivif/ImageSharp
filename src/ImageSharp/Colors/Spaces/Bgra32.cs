@@ -5,14 +5,13 @@
 
 namespace ImageSharp.Colors.Spaces
 {
-    using System;
     using System.ComponentModel;
     using System.Numerics;
 
     /// <summary>
     /// Represents an BGRA (blue, green, red, alpha) color.
     /// </summary>
-    public struct Bgra32 : IEquatable<Bgra32>
+    public class Bgra32 : ColorSpaceBase<Bgra32>
     {
         /// <summary>
         /// Represents a 32 bit <see cref="Bgra32"/> that has B, G, R, and A values set to zero.
@@ -20,42 +19,36 @@ namespace ImageSharp.Colors.Spaces
         public static readonly Bgra32 Empty = default(Bgra32);
 
         /// <summary>
-        /// The backing vector for SIMD support.
-        /// </summary>
-        private Vector4 backingVector;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Bgra32"/> struct.
+        /// Initializes a new instance of the <see cref="Bgra32"/> class.
         /// </summary>
         /// <param name="b">The blue component of this <see cref="Bgra32"/>.</param>
         /// <param name="g">The green component of this <see cref="Bgra32"/>.</param>
         /// <param name="r">The red component of this <see cref="Bgra32"/>.</param>
         /// <param name="a">The alpha component of this <see cref="Bgra32"/>.</param>
         public Bgra32(byte b, byte g, byte r, byte a = 255)
-            : this()
         {
-            this.backingVector = Vector4.Clamp(new Vector4(b, g, r, a), Vector4.Zero, new Vector4(255));
+            this.BackingVector = Vector4.Clamp(new Vector4(b, g, r, a), Vector4.Zero, new Vector4(255));
         }
 
         /// <summary>
         /// Gets the blue component of the color
         /// </summary>
-        public byte B => (byte)this.backingVector.X;
+        public byte B => (byte)this.BackingVector.X;
 
         /// <summary>
         /// Gets the green component of the color
         /// </summary>
-        public byte G => (byte)this.backingVector.Y;
+        public byte G => (byte)this.BackingVector.Y;
 
         /// <summary>
         /// Gets the red component of the color
         /// </summary>
-        public byte R => (byte)this.backingVector.Z;
+        public byte R => (byte)this.BackingVector.Z;
 
         /// <summary>
         /// Gets the alpha component of the color
         /// </summary>
-        public byte A => (byte)this.backingVector.W;
+        public byte A => (byte)this.BackingVector.W;
 
         /// <summary>
         /// Gets the <see cref="Bgra32"/> integer representation of the color.
@@ -83,59 +76,6 @@ namespace ImageSharp.Colors.Spaces
             return new Bgra32(color.B, color.G, color.R, color.A);
         }
 
-        /// <summary>
-        /// Compares two <see cref="Bgra32"/> objects for equality.
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="Bgra32"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="Bgra32"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is equal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator ==(Bgra32 left, Bgra32 right)
-        {
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// Compares two <see cref="Bgra32"/> objects for inequality.
-        /// </summary>
-        /// <param name="left">
-        /// The <see cref="Bgra32"/> on the left side of the operand.
-        /// </param>
-        /// <param name="right">
-        /// The <see cref="Bgra32"/> on the right side of the operand.
-        /// </param>
-        /// <returns>
-        /// True if the current left is unequal to the <paramref name="right"/> parameter; otherwise, false.
-        /// </returns>
-        public static bool operator !=(Bgra32 left, Bgra32 right)
-        {
-            return !left.Equals(right);
-        }
-
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            if (obj is Bgra32)
-            {
-                Bgra32 color = (Bgra32)obj;
-
-                return this.backingVector == color.backingVector;
-            }
-
-            return false;
-        }
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return GetHashCode(this);
-        }
-
         /// <inheritdoc/>
         public override string ToString()
         {
@@ -146,22 +86,5 @@ namespace ImageSharp.Colors.Spaces
 
             return $"Bgra32 [ B={this.B}, G={this.G}, R={this.R}, A={this.A} ]";
         }
-
-        /// <inheritdoc/>
-        public bool Equals(Bgra32 other)
-        {
-            return this.backingVector.Equals(other.backingVector);
-        }
-
-        /// <summary>
-        /// Returns the hash code for this instance.
-        /// </summary>
-        /// <param name="color">
-        /// The instance of <see cref="Bgra32"/> to return the hash code for.
-        /// </param>
-        /// <returns>
-        /// A 32-bit signed integer that is the hash code for this instance.
-        /// </returns>
-        private static int GetHashCode(Bgra32 color) => color.backingVector.GetHashCode();
     }
 }
